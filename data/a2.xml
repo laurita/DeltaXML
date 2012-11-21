@@ -1,0 +1,10 @@
+<root>
+	<a>
+		<a1/>
+	</a>
+	<b>
+		<b1/>
+	</b>
+	<c attr="hello world" />
+	<e>Word by Word modifications</e>
+</root>
