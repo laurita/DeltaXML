@@ -63,10 +63,6 @@ public class DeltaXML {
 
 	public static void diff(Element el1, Element el2)
 			throws XPathExpressionException {
-		System.out.println("diff of: " + el1.getNodeName() + ", " + el2.getNodeName());
-		System.out.println("Equal: " + el1.isEqualNode(el2));
-		print(el1, 0);
-		print(el2, 0);
 		Element el11;
 		Element el21;
 		if (el1.isEqualNode(el2)) {
@@ -111,6 +107,35 @@ public class DeltaXML {
 						el1.appendChild(importedNode);
 					}
 				}
+			} else if (el1.hasChildNodes() && el1.getFirstChild().getNodeType() == Document.TEXT_NODE) {
+				Element txtGr = el1.getOwnerDocument()
+						.createElement("deltaxml:textGroup");
+				el1.appendChild(txtGr);
+				if (el2.hasChildNodes() && el2.getFirstChild().getNodeType() == Document.TEXT_NODE) {
+					if (el1.getFirstChild().getTextContent().equals(el2.getFirstChild().getTextContent())) {
+						txtGr.setAttribute("deltaxml:deltaV2", "A=B");
+					} else {
+						txtGr.setAttribute("deltaxml:deltaV2", "A!=B");
+						Element txt1 = txtGr.getOwnerDocument().createElement("deltaxml:text");
+						txt1.setAttribute("deltaxml:deltaV2", "A");
+						Text txt1text = txt1.getOwnerDocument().createTextNode(el1.getFirstChild().getTextContent());
+						txt1.appendChild(txt1text);
+						txtGr.appendChild(txt1);
+						Element txt2 = txtGr.getOwnerDocument().createElement("deltaxml:text");
+						txt2.setAttribute("deltaxml:deltaV2", "B");
+						Text txt2text = txt2.getOwnerDocument().createTextNode(el2.getFirstChild().getTextContent());
+						txt2.appendChild(txt2text);
+						txtGr.appendChild(txt2);
+					}
+				} else {
+					txtGr.setAttribute("deltaxml:deltaV2", "A");
+					Element txt1 = txtGr.getOwnerDocument().createElement("deltaxml:text");
+					txt1.setAttribute("deltaxml:deltaV2", "A");
+					Text txt1text = txt1.getOwnerDocument().createTextNode(el1.getFirstChild().getTextContent());
+					txt1.appendChild(txt1text);
+					txtGr.appendChild(txt1);
+				}
+				el1.removeChild(el1.getFirstChild());
 			} else if (el2.hasChildNodes() && el2.getFirstChild().getNodeType() != Document.TEXT_NODE) {
 				NodeList nl2 = el2.getChildNodes();
 				for (int k = 0; k < nl2.getLength(); k++) {
@@ -119,6 +144,16 @@ public class DeltaXML {
 					Node importedNode = el1.getOwnerDocument().importNode(clone, true);
 					el1.appendChild(importedNode);
 				}
+			} else if (el2.hasChildNodes() && el2.getFirstChild().getNodeType() == Document.TEXT_NODE) {
+				Element txtGr = el1.getOwnerDocument()
+						.createElement("deltaxml:textGroup");
+				el1.appendChild(txtGr);
+				txtGr.setAttribute("deltaxml:deltaV2", "B");
+				Element txt1 = txtGr.getOwnerDocument().createElement("deltaxml:text");
+				txt1.setAttribute("deltaxml:deltaV2", "B");
+				Text txt1text = txt1.getOwnerDocument().createTextNode(el2.getFirstChild().getTextContent());
+				txt1.appendChild(txt1text);
+				txtGr.appendChild(txt1);
 			}
 		}
 		//diffAttributes(el1, el2);
@@ -259,11 +294,7 @@ public class DeltaXML {
 
 	public static void print(Node n, int level) {
 		int i;
-
-		// find out what type of node this is
-
 		short t = n.getNodeType();
-
 		if (t == Document.ELEMENT_NODE) {
 			if (n.hasChildNodes()) {
 				print_element(level, n, OPEN);
@@ -275,30 +306,24 @@ public class DeltaXML {
 				print_text(level, n);
 			}
 		}
-
 		NodeList nl = n.getChildNodes();
 		if (nl.getLength() == 0) {
 			return;
 		}
-
 		for (i = 0; i < nl.getLength(); i++) {
 			print(nl.item(i), level + 1);
 		}
-
 		if (t == Document.ELEMENT_NODE) {
 			if (n.hasChildNodes()) {
 				print_element(level, n, CLOSE);
 			}
 		}
-
 	}
 
 	static void print_element(int level, Node n, int mode) {
-		String slash = "";
-		if (mode == CLOSE || mode == OPENCLOSE) {
+		if (mode == CLOSE) {
 			System.out
 					.print(get_indent(level) + "</" + n.getNodeName());
-			print_attributes(n);
 			System.out.println(">");
 		} else if (mode == OPENCLOSE) {
 			System.out.print(get_indent(level) + "<" + n.getNodeName());
@@ -363,7 +388,7 @@ public class DeltaXML {
 		deleteEmptyChildren(d1);
 		deleteEmptyChildren(d2);
 
-		// Step 2:
+		// Step 2: do a diff and print a modified XML tree (the first one is modified!!!)
 		diff(root1, root2);
 		print(root1, 0);
 	}

@@ -39,12 +39,6 @@ public class DeltaXMLTest {
 		//tester = new DeltaXML();
     }
  
-    @AfterClass
-    public static void oneTimeTearDown() {
-        // one-time cleanup code
-    	System.out.println("@AfterClass - oneTimeTearDown");
-    }
-	
 	@Test
 	public void test() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 		assertEquals("Result", 13, d1.getDocumentElement().getChildNodes().getLength());
