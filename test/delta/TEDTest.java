@@ -88,7 +88,6 @@ public class TEDTest {
 		Element root1 = t1.getDocumentElement();
 		DeltaXML.deleteEmptyChildren(t1);
 		TED.add_ids(root1, 0);
-		//DeltaXML.print(root1, 0);
 		int len = 8;
 		int[] real = TED.lmld(root1, new int[len]);
 		int[] shouldBe = new int[] { 0, 0, 2, 3, 4, 5, 6, 0};
@@ -104,15 +103,12 @@ public class TEDTest {
 		Element root1 = t1.getDocumentElement();
 		DeltaXML.deleteEmptyChildren(t1);
 		TED.add_ids(root1, 0);
-		//System.out.println(TED.getNode(t1, String.valueOf(1)).getNodeName());
 		assertEquals(TED.getNode(t1, String.valueOf(1)).getNodeName(), "b");
 	}
 	
 	
 	@Test
 	public void test_ted() throws SAXException, IOException, XPathExpressionException {
-		//String xml1 = "./data/t1.xml";
-		//String xml2 = "./data/t2.xml";
 		String xml1 = "./data/a1.xml";
 		String xml2 = "./data/a2.xml";
 		Document t1 = builder.parse(new File(xml1));

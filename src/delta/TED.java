@@ -1,24 +1,15 @@
 package delta;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ranges.Range;
-import org.xml.sax.SAXException;
 
 public class TED {
 
@@ -346,24 +337,4 @@ public class TED {
 		}
 		return res;
 	}
-
-	/*
-	public static void main(String[] args) throws ParserConfigurationException,
-			SAXException, IOException, XPathExpressionException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		String xmlFile1 = "./data/a1.xml";
-		String xmlFile2 = "./data/a2.xml";
-		Document d1 = builder.parse(new File(xmlFile1));
-		Document d2 = builder.parse(new File(xmlFile2));
-		TED tester = new TED();
-		Node root1 = d1.getDocumentElement();
-		Node root2 = d2.getDocumentElement();
-		DeltaXML.deleteEmptyChildren(d1);
-		DeltaXML.deleteEmptyChildren(d2);
-		TED.add_ids(root1, 0);
-		TED.add_ids(root2, 0);
-		System.out.println("TED of a1 and a2 " + TED.ted(root1, root2));
-	}
-	*/
 }
